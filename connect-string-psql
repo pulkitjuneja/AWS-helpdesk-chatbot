@@ -1,0 +1,17 @@
+mac - os 
+
+psql \
+   --host=helpdesk-datastore.cdxpes6le825.us-east-1.rds.amazonaws.com \
+   --port=5432 \
+   --username cpatdev \
+   --password \
+   --dbname=helpdesk_datastore 
+
+windows 
+
+psql ^
+   --host=helpdesk-datastore.cdxpes6le825.us-east-1.rds.amazonaws.com ^
+   --port=5432 ^
+   --username cpatdev ^
+   --password ^
+   --dbname=helpdesk_datastore 
