@@ -4,26 +4,37 @@ const lexHelper = require('./helpers/lexHelper')
 
 handler = (event, context, cb) => {
 
-  const source = 'DialogCodeHook'
-  const mnemonic = 'ROIC'
-  const company = 'event.currentIntent.slots.company;'
+  const source = event.invocationSource;
+  const mnemonic = event.currentIntent.slots.mnemonic;
+  const company = event.currentIntent.slots.company;
 
   if (source === 'DialogCodeHook') {
     let promises = [];
-    console.log('here');
+    console.log("here");
     promises.push(validateMnemonic(mnemonic));
     promises.push(validateCompany(company));
     Promise.all(promises).then((response) => {
-      console.log(response);
+      for (var i = 0; i < response.length; i++) {
+        if (!response[i].isValid) {
+          cb(null, lexHelper.elicitSlot(event.sessionAttributes, event.currentIntent.name, event.currentIntent.slots, response[i].violatedSlot, response[i].message));
+          break;
+        }
+      }
+      dbHelper.closeCon();
     }).catch((error) => {
       console.log(error);
+      dbHelper.closeCon();
     })
+  }
+  else {
+    const fulFillMessage = `Answering ${mnemonic} for ${company} during the years ${event.currentIntent.slots.date}`;
+    cb(null, lexHelper.close(event.sessionAttributes, 'Fulfilled', fulFillMessage))
+    return;
   }
 }
 
 validateMnemonic = (mnemonic) => {
   return dbHelper.fetchMnemonics().then((response) => {
-    console.log(response)
     var found = response.some((elem) => {
       return elem.name = mnemonic;
     });
@@ -33,7 +44,6 @@ validateMnemonic = (mnemonic) => {
 
 validateCompany = (company) => {
   return dbHelper.fetchCompanies().then((response) => {
-    console.log(response)
     var found = response.some((elem) => {
       return elem.name = company;
     });
@@ -41,5 +51,31 @@ validateCompany = (company) => {
   })
 }
 
+handler({
+  "currentIntent": {
+    "slots": {
+      "mnemonic": "ROIC",
+      "company": "IBM",
+      "date": "2002"
+    },
+    "name": "requestParameterInfo",
+    "confirmationStatus": "None"
+  },
+  "bot": {
+    "alias": "$LATEST",
+    "version": "$LATEST",
+    "name": "CpatHelpdesk"
+  },
+  "userId": "John",
+  "invocationSource": "DialogCodeHook",
+  "outputDialogMode": "Text",
+  "messageVersion": "1.0",
+  "sessionAttributes": {}
+}, null, (err, data) => {
+  console.log(data);
+  return ;
+});
 
-handler(null, null, null);
+module.exports = {
+  handler
+}

@@ -2,7 +2,6 @@ const dbCon = require('./connectPostgres')
 
 const fetchMnemonics = () => {
   return dbCon.query('SELECT * FROM mnemonics').then((response) => {
-    console.log(response);
     return response[0];
   });
 }
@@ -13,9 +12,10 @@ const fetchCompanies = () => {
   })
 }
 
-fetchMnemonics();
+const closeCon = () => dbCon.close();
 
 module.exports = {
   fetchCompanies,
-  fetchMnemonics
+  fetchMnemonics,
+  closeCon
 }

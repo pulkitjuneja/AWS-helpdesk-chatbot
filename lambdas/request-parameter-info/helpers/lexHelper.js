@@ -21,11 +21,23 @@ buildValidationResult = (isValid, violatedSlot, messageContent) => {
   return {
     isValid,
     violatedSlot,
-    message: { contentType: 'PlainText', content: messageContent },
+    message: { contentType: 'PlainText', content: messageContent }
   };
 }
 
+close = (sessionAttributes, fulfillmentState, messageContent) => {
+    return {
+        sessionAttributes,
+        dialogAction: {
+            type: 'Close',
+            fulfillmentState,
+            message:{ contentType: 'PlainText', content: messageContent }
+        },
+    };
+}
+
 module.exports = {
+  close,
   elicitSlot,
   buildValidationResult
 }

@@ -7,6 +7,5 @@ const sequelize = new Sequelize('helpdesk_datastore', 'cpatdev', 'password123', 
     ssl: 'Amazon RDS'
   }
 });
-console.log('initialized');
 
 module.exports = sequelize;
