@@ -11,12 +11,19 @@ handler = (event, context, cb) => {
 
   if (source === 'DialogCodeHook') {
 
-    validateMnemonicNative(mnemonic).then((rows, res) => {
-      cb(null, rows);
-    })
-
-
+    console.log("here");
+    validateMnemonicNative(mnemonic).then((response) => {
+      console.log(response);
+        if (!response.isValid) {
+          const finalOut = lexHelper.elicitSlot(event.sessionAttributes, event.currentIntent.name, event.currentIntent.slots, response.violatedSlot, response.message)
+          cb();
+        }
+    }).catch((err)=>{
+      console.log('inside error');
+      console.log(err);
+    });
   }
+
   else {
     const fulFillMessage = `Answering ${mnemonic} for ${company} during the years ${event.currentIntent.slots.date}`;
     cb(null, lexHelper.close(event.sessionAttributes, 'Fulfilled', fulFillMessage))
@@ -24,34 +31,44 @@ handler = (event, context, cb) => {
   }
 }
 
-
-
 /* ---- validation functions  ---- */
 
 
 validateMnemonicNative = (mnemonic) => {
-  return pgQuery("SELECT * FROM mnemonics");
-}
-
-validateMnemonic = (mnemonic) => {
-  return dbHelper.fetchMnemonics().then((response) => {
-    var found = response.some((elem) => {
-      return elem.name = mnemonic;
+  return pgQuery("SELECT * FROM mnemonics").then((rows, res) => {
+    var found = rows[0].some((elem) => {
+      return elem.name == mnemonic
     });
     return lexHelper.buildValidationResult(found, 'mnemonic', found ? null : `we do not support the mnemonic type ${mnemonic}`)
   });
 }
-
-validateCompany = (company) => {
-  return dbHelper.fetchCompanies().then((response) => {
-    var found = response.some((elem) => {
-      return elem.name = company;
-    });
-    return lexHelper.buildValidationResult(found, 'company', `sorry we current do not have data from ${company}`)
-  })
-}
-
 /* ------------------------------- */
+
+// handler({
+//   "currentIntent": {
+//     "slots": {
+//       "mnemonic": "RTOIC",
+//       "company": "IBM",
+//       "date": "2002"
+//     },
+//     "name": "requestParameterInfo",
+//     "confirmationStatus": "None"
+//   },
+//   "bot": {
+//     "alias": "$LATEST",
+//     "version": "$LATEST",
+//     "name": "CpatHelpdesk"
+//   },
+//   "userId": "John",
+//   "invocationSource": "DialogCodeHook",
+//   "outputDialogMode": "Text",
+//   "messageVersion": "1.0",
+//   "sessionAttributes": {}
+// }, null, (data) => {
+//   console.log(data);
+//   return;
+// });
+
 
 module.exports = {
   handler
