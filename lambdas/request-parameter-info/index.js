@@ -1,6 +1,7 @@
-const dbHelper = require('./helpers/dbHelper.js')
+const pgQuery = require('pg-query')
 const lexHelper = require('./helpers/lexHelper')
 
+pgQuery.connectionParameters = 'postgres://cpatdev:password123@helpdesk-datastore.cdxpes6le825.us-east-1.rds.amazonaws.com:5432/helpdesk_datastore';
 
 handler = (event, context, cb) => {
 
@@ -9,28 +10,27 @@ handler = (event, context, cb) => {
   const company = event.currentIntent.slots.company;
 
   if (source === 'DialogCodeHook') {
-    let promises = [];
-    console.log("here");
-    promises.push(validateMnemonic(mnemonic));
-    promises.push(validateCompany(company));
-    Promise.all(promises).then((response) => {
-      for (var i = 0; i < response.length; i++) {
-        if (!response[i].isValid) {
-          cb(null, lexHelper.elicitSlot(event.sessionAttributes, event.currentIntent.name, event.currentIntent.slots, response[i].violatedSlot, response[i].message));
-          break;
-        }
-      }
-      dbHelper.closeCon();
-    }).catch((error) => {
-      console.log(error);
-      dbHelper.closeCon();
+
+    validateMnemonicNative(mnemonic).then((rows, res) => {
+      cb(null, rows);
     })
+
+
   }
   else {
     const fulFillMessage = `Answering ${mnemonic} for ${company} during the years ${event.currentIntent.slots.date}`;
     cb(null, lexHelper.close(event.sessionAttributes, 'Fulfilled', fulFillMessage))
     return;
   }
+}
+
+
+
+/* ---- validation functions  ---- */
+
+
+validateMnemonicNative = (mnemonic) => {
+  return pgQuery("SELECT * FROM mnemonics");
 }
 
 validateMnemonic = (mnemonic) => {
@@ -51,30 +51,7 @@ validateCompany = (company) => {
   })
 }
 
-handler({
-  "currentIntent": {
-    "slots": {
-      "mnemonic": "ROIC",
-      "company": "IBM",
-      "date": "2002"
-    },
-    "name": "requestParameterInfo",
-    "confirmationStatus": "None"
-  },
-  "bot": {
-    "alias": "$LATEST",
-    "version": "$LATEST",
-    "name": "CpatHelpdesk"
-  },
-  "userId": "John",
-  "invocationSource": "DialogCodeHook",
-  "outputDialogMode": "Text",
-  "messageVersion": "1.0",
-  "sessionAttributes": {}
-}, null, (err, data) => {
-  console.log(data);
-  return ;
-});
+/* ------------------------------- */
 
 module.exports = {
   handler
