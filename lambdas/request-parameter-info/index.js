@@ -15,8 +15,9 @@ handler = (event, context, cb) => {
     validateMnemonicNative(mnemonic).then((response) => {
       console.log(response);
         if (!response.isValid) {
-          const finalOut = lexHelper.elicitSlot(event.sessionAttributes, event.currentIntent.name, event.currentIntent.slots, response.violatedSlot, response.message)
-          cb();
+          const finalOut = lexHelper.elicitSlot(event.sessionAttributes, event.currentIntent.name, event.currentIntent.slots, response.violatedSlot, response.message);
+          console.log(finalOut);
+          cb(null,finalOut);
         }
     }).catch((err)=>{
       console.log('inside error');
@@ -44,30 +45,30 @@ validateMnemonicNative = (mnemonic) => {
 }
 /* ------------------------------- */
 
-// handler({
-//   "currentIntent": {
-//     "slots": {
-//       "mnemonic": "RTOIC",
-//       "company": "IBM",
-//       "date": "2002"
-//     },
-//     "name": "requestParameterInfo",
-//     "confirmationStatus": "None"
-//   },
-//   "bot": {
-//     "alias": "$LATEST",
-//     "version": "$LATEST",
-//     "name": "CpatHelpdesk"
-//   },
-//   "userId": "John",
-//   "invocationSource": "DialogCodeHook",
-//   "outputDialogMode": "Text",
-//   "messageVersion": "1.0",
-//   "sessionAttributes": {}
-// }, null, (data) => {
-//   console.log(data);
-//   return;
-// });
+handler({
+  "currentIntent": {
+    "slots": {
+      "mnemonic": "RTOIC",
+      "company": "IBM",
+      "date": "2002"
+    },
+    "name": "requestParameterInfo",
+    "confirmationStatus": "None"
+  },
+  "bot": {
+    "alias": "$LATEST",
+    "version": "$LATEST",
+    "name": "CpatHelpdesk"
+  },
+  "userId": "John",
+  "invocationSource": "DialogCodeHook",
+  "outputDialogMode": "Text",
+  "messageVersion": "1.0",
+  "sessionAttributes": {}
+}, null, (data) => {
+  console.log(data);
+  return;
+});
 
 
 module.exports = {
