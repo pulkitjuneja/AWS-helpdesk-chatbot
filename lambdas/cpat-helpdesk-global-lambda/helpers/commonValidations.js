@@ -1,19 +1,19 @@
-const fs = require('fs'); 
+const fs = require('fs');
 const lexHelper = require('./lexHelper');
 
 
 valdateMnemonic = (mnemonic) => {
-  const mnemonics = JSON.parse(fs.readFileSync('../models/mnemonics.json')).mnemonics;
-  var found = mnemonics.some((element)=>{
-    return element.name === mnemonic.toLowerCase();
+  const mnemonics = JSON.parse(fs.readFileSync('./models/mnemonics.json')).mnemonics;
+  var found = mnemonics.some((element) => {
+    return element === mnemonic.toLowerCase();
   });
   return found;
 }
 
 validateComapny = (company) => {
-  const comapnies = JSON.parse(fs.readFileSync('../model/companies.json')).companies;
-  var found = companies.some((element)=>{
-    return element.name === cpmany.toLowerCase();
+  const companies = JSON.parse(fs.readFileSync('./models/companies.json')).companies;
+  var found = companies.some((element) => {
+    return element === company.toLowerCase();
   });
   return found;
 }

@@ -36,7 +36,19 @@ close = (sessionAttributes, fulfillmentState, messageContent) => {
     };
 }
 
+function delegate(sessionAttributes, slots) {
+    return {
+        sessionAttributes,
+        dialogAction: {
+            type: 'Delegate',
+            slots,
+        },
+    };
+}
+
+
 module.exports = {
+  delegate,
   close,
   elicitSlot,
   buildValidationResult
