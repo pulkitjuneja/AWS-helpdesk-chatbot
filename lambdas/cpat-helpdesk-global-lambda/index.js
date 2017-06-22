@@ -7,18 +7,16 @@ handler = (event, context, callback) => {
     intent.handler(event, context, callback);
   }
   catch (err) {
-    callback(err);
+    callback(err.toString());
   }
 }
 
 // handler({
 //   "currentIntent": {
 //     "slots": {
-//       "mnemonic": "ROIC",
-//       "company": "IBM",
-//       "date": "2002"
+//       "deck" : "hisytorical cash position"
 //     },
-//     "name": "requestParameterInfo",
+//     "name": "getDeck",
 //     "confirmationStatus": "None"
 //   },
 //   "bot": {

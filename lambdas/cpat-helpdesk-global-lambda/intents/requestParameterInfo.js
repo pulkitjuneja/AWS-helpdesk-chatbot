@@ -14,7 +14,7 @@ handler = (event, context, callback) => {
       return;
     }
 
-    const sessionAtrtibutes = event.currentIntent.sessionAtrtibutes || {} ;
+    const sessionAtrtibutes = event.sessionAtrtibutes || {} ;
     callback(null,lexHelper.delegate(sessionAtrtibutes,event.currentIntent.slots));
   }
   else {

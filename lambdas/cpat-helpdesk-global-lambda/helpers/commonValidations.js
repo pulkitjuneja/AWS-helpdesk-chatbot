@@ -18,7 +18,16 @@ validateComapny = (company) => {
   return found;
 }
 
+validateDeck = (deck) => {
+  const decks = JSON.parse(fs.readFileSync('./models/decks.json')).decks;
+  var found = decks.some((element)=>{
+    return element.toLowerCase() === deck.toLowerCase();
+  })
+  return found;
+}
+
 module.exports = {
   validateComapny,
+  validateDeck,
   valdateMnemonic
 }

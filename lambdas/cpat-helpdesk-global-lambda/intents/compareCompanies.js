@@ -12,7 +12,7 @@ handler = (event, context, callback) => {
             callback(null, lexHelper.elicitSlot(event.sessionAttributes, event.currentIntent.name, event.currentIntent.slots, validationres.violatedSlot, validationres.message));
             return;
         }
-        const sessionAtrtibutes = event.currentIntent.sessionAtrtibutes || {};
+        const sessionAtrtibutes = event.sessionAtrtibutes || {};
         callback(null, lexHelper.delegate(sessionAtrtibutes, event.currentIntent.slots));
     }
     else {
