@@ -34,4 +34,25 @@ This can be broken down into following parts
 
 **AWS Lambda** - AWS Lambda lets you run code without provisioning or managing servers. Amazon lex can be combined with AWS lambda which can be used as code hook for validation and fulfillment through lex. 
 
-### MEthodologies 
+### Methodologies 
+
+Prior to using it, Amazon lex must be trained. The bot is trained by specifying a set of intents specific to the application. For each intent The following parameters are specified 
+* a set of sample utterances which will trigger the intent
+* a set of slots(entities) with their required prompt messages
+* a confirmation prompt that is called before the fulfillment lambda function is invoked.
+* the lambda functions (if to be used) required for validation and fulfillment 
+
+![intent control panel])(intent-panel.PNG)   
+
+After the intents and their sample utterances are specified lex learns to categorize user questions into one of these intens. It can correctly recognize the intent of the sentence even if it does not exactly match any of the sample utterances for that intent
+
+It then proceeds to the 'initialization and valdiation' step. Out of the box Lex can determine which of the required entities are missing in the context and prompts the user for them. Any complex validation of the data (ex - verifying that the specified deck type is a valid one) have to be done by specifying a lambda function as a code hook.  
+
+For processing the entities and responding back the user needs to define a lambda function and specify it as the fulfillment code hook for the intent.
+
+`note - same lambda function can be used for both initialization and validation as awell as fulfillment`
+
+
+
+## Working Screenshots
+
